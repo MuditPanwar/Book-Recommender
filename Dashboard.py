@@ -22,3 +22,14 @@ books["large_thumbnail"] = np.where(
     books["large_thumbnail"]
 )
 
+raw_documents = TextLoader("tagged_description.txt").load()
+text_splitter = CharacterTextSplitter(separater='\n', chunk_size=0, chunk_overlap=0)
+documents = text_splitter.split_documents(raw_documents)
+db_books = Chroma.from_documents(documents, embedding_model)
+
+def retrieve_semantic_recommendations(
+        query: str,
+        category: str = None
+
+)
+
