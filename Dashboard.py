@@ -14,7 +14,7 @@ import gradio as gr
 
 load_dotenv()
 
-books = pd.read_csv("books_with_emotions.csv.csv")
+books = pd.read_csv("books_with_emotions.csv")
 books["large_thumbnail"] = books["thumbnail"] + "&fife=w800"
 books["large_thumbnail"] = np.where(
     books["large_thumbnail"].isna(),
@@ -23,7 +23,7 @@ books["large_thumbnail"] = np.where(
 )
 
 raw_documents = TextLoader("tagged_description.txt").load()
-text_splitter = CharacterTextSplitter(separater='\n', chunk_size=0, chunk_overlap=0)
+text_splitter = CharacterTextSplitter(separator='\n', chunk_size=0, chunk_overlap=0)
 documents = text_splitter.split_documents(raw_documents)
 db_books = Chroma.from_documents(documents, embedding_model)
 
@@ -98,3 +98,10 @@ with gr.Blocks(theme = gr.themes.Glass()) as dashboard:
 
         gr.Markdown("## Recommendations")
         output = gr.Gallery(label = "Recommend books", columns = 8, rows = 2)
+
+        submit_button.click(fn=recommend_books,
+                            inputs=[user_query, category_dropdown, tone_dropdown],
+                            outputs=output)
+
+if __name__ == "__main__":
+    dashboard.launch()
